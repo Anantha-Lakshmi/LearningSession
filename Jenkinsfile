@@ -12,7 +12,7 @@ pipeline {
         
         APP_NAME = "LearningSession"
         BETA_PORT = 8084
-        GAMMA_PORT = 8085
+        //GAMMA_PORT = 8085
         //PROD_PORT = 8083
         DOCKER_IMAGE = "Lakshmi/learning_session"
     }
@@ -65,28 +65,28 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Gamma') {
-             when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-             }
-             steps {
-                echo "Deploying to Gamma environment on port ${GAMMA_PORT}"
-                script {
-                    sh """
-                        docker rm -f ${APP_NAME}-gamma || true
-                    """
-                    sh """
-                        docker run -d --name ${APP_NAME}-gamma -p ${GAMMA_PORT}:${GAMMA_PORT} \
-                        -e SPRING_PROFILES_ACTIVE=gamma \
-                        ${DOCKER_IMAGE}:${DOCKER_TAG}
-                    """
-                    sleep(time: 30, unit: "SECONDS")
-                    def maxRetries = 3
-                    def retryDelay = 10
-                    echo "Gamma is running on http://${SERVER_IP}:${GAMMA_PORT}/"
-                    sh "docker ps | grep ${APP_NAME}-gamma || exit 1"
-                }
-             }
-        }
-    }
-}
+//         stage('Deploy to Gamma') {
+//              when {
+//                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+//              }
+//              steps {
+//                 echo "Deploying to Gamma environment on port ${GAMMA_PORT}"
+//                 script {
+//                     sh """
+//                         docker rm -f ${APP_NAME}-gamma || true
+//                     """
+//                     sh """
+//                         docker run -d --name ${APP_NAME}-gamma -p ${GAMMA_PORT}:${GAMMA_PORT} \
+//                         -e SPRING_PROFILES_ACTIVE=gamma \
+//                         ${DOCKER_IMAGE}:${DOCKER_TAG}
+//                     """
+//                     sleep(time: 30, unit: "SECONDS")
+//                     def maxRetries = 3
+//                     def retryDelay = 10
+//                     echo "Gamma is running on http://${SERVER_IP}:${GAMMA_PORT}/"
+//                     sh "docker ps | grep ${APP_NAME}-gamma || exit 1"
+//                 }
+//              }
+//         }
+//     }
+// }
