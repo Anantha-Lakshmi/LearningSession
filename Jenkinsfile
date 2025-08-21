@@ -15,21 +15,9 @@ pipeline {
         DOCKER_TAG = "${env.BUILD_NUMBER}"
     }
     stages {
-        stage("Verify Docker Access") {
-            steps {
-                script {
-                    try {
-                        sh 'docker ps'
-                        echo "Docker access verified"
-                    } catch (Exception e) {
-                        error "Docker not accessible. Ensure Jenkins user has Docker permissions (sudo usermod -aG docker jenkins)"
-                    }
-                }
-            }
-        }
         stage ("Checkout") {
             steps {
-                git url: 'https://github.com/puli-reddy/LearningSession.git', branch: 'main'
+                git url: "${REPO_URL}", branch: 'main'
                 sh 'chmod +x mvnw'
             }
         }
@@ -46,26 +34,12 @@ pipeline {
         stage ("Build Docker Image") {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh """
-                            docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                        """
-                    }
+                    sh """
+                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                    """
                 }
             }
         }
-//         stage('Push to Docker Hub') {
-//             steps {
-//                 script {
-//                     withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-//                         sh """
-//                             echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
-//                             docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
-//                         """
-//                     }
-//                 }
-//             }
-//         }
         stage('Deploy to Beta') {
             when {
                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
@@ -81,7 +55,7 @@ pipeline {
                         -e SPRING_PROFILES_ACTIVE=beta \
                         ${DOCKER_IMAGE}:${DOCKER_TAG}
                     """
-//                     sleep(time: 60, unit: "SECONDS")
+                    sleep(time: 30, unit: "SECONDS")
                     def maxRetries = 3
                     def retryDelay = 10
                     echo "Beta is running on http://${SERVER_IP}:${BETA_PORT}/"
@@ -104,7 +78,7 @@ pipeline {
                         -e SPRING_PROFILES_ACTIVE=gamma \
                         ${DOCKER_IMAGE}:${DOCKER_TAG}
                     """
-//                     sleep(time: 60, unit: "SECONDS")
+                    sleep(time: 30, unit: "SECONDS")
                     def maxRetries = 3
                     def retryDelay = 10
                     echo "Gamma is running on http://${SERVER_IP}:${GAMMA_PORT}/"
@@ -112,28 +86,5 @@ pipeline {
                 }
              }
         }
-//         stage('Deploy to Prod') {
-//             when {
-//                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-//             }
-//             steps {
-//                 echo "Deploying to Prod environment on port ${PROD_PORT}"
-//                 script {
-//                     sh """
-//                         docker rm -f ${APP_NAME}-prod || true
-//                     """
-//                     sh """
-//                         docker run -d --name ${APP_NAME}-prod -p ${PROD_PORT}:${PROD_PORT} \
-//                         -e SPRING_PROFILES_ACTIVE=prod \
-//                         ${DOCKER_IMAGE}:${DOCKER_TAG}
-//                     """
-// //                     sleep(time: 60, unit: "SECONDS")
-//                     def maxRetries = 3
-//                     def retryDelay = 10
-//                     echo "Prod is running on http://${SERVER_IP}:${PROD_PORT}/"
-//                     sh "docker ps | grep ${APP_NAME}-prod || exit 1"
-//                 }
-//             }
-//         }
-//     }
-// }
+    }
+}
