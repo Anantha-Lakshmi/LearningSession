@@ -5,14 +5,16 @@ pipeline {
         jdk 'JDK 21 '
     }
     environment {
+        REPO_URL = "https://github.com/puli-reddy/LearningSession.git"
+        SERVER_IP = "localhost"
+        LOG_DIR = "${WORKSPACE}/logs"
+        DOCKER_TAG = "${env.BUILD_NUMBER}"
+        
         APP_NAME = "LearningSession"
         BETA_PORT = 8084
         GAMMA_PORT = 8085
         //PROD_PORT = 8083
-        SERVER_IP = "localhost"
-        LOG_DIR = "${WORKSPACE}/logs"
         DOCKER_IMAGE = "Lakshmi/learning_session"
-        DOCKER_TAG = "${env.BUILD_NUMBER}"
     }
     stages {
         stage ("Checkout") {
