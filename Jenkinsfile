@@ -5,7 +5,7 @@ pipeline {
         jdk 'JDK 21 '
     }
     environment {
-        REPO_URL = "https://github.com/puli-reddy/LearningSession.git"
+        REPO_URL = "https://github.com/Anantha-Lakshmi/LearningSession.git"
         SERVER_IP = "localhost"
         LOG_DIR = "${WORKSPACE}/logs"
         DOCKER_TAG = "${env.BUILD_NUMBER}"
