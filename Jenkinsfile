@@ -6,12 +6,12 @@ pipeline {
     }
     environment {
         APP_NAME = "LearningSession"
-        BETA_PORT = 8081
-        GAMMA_PORT = 8082
-        PROD_PORT = 8083
+        BETA_PORT = 8084
+        GAMMA_PORT = 8085
+        //PROD_PORT = 8083
         SERVER_IP = "localhost"
         LOG_DIR = "${WORKSPACE}/logs"
-        DOCKER_IMAGE = "thoufiqzeero/learning_session"
+        DOCKER_IMAGE = "Lakshmi/learning_session"
         DOCKER_TAG = "${env.BUILD_NUMBER}"
     }
     stages {
@@ -54,18 +54,18 @@ pipeline {
                 }
             }
         }
-        stage('Push to Docker Hub') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh """
-                            echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
-                            docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
-                        """
-                    }
-                }
-            }
-        }
+//         stage('Push to Docker Hub') {
+//             steps {
+//                 script {
+//                     withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+//                         sh """
+//                             echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+//                             docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+//                         """
+//                     }
+//                 }
+//             }
+//         }
         stage('Deploy to Beta') {
             when {
                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
@@ -112,28 +112,28 @@ pipeline {
                 }
              }
         }
-        stage('Deploy to Prod') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
-            steps {
-                echo "Deploying to Prod environment on port ${PROD_PORT}"
-                script {
-                    sh """
-                        docker rm -f ${APP_NAME}-prod || true
-                    """
-                    sh """
-                        docker run -d --name ${APP_NAME}-prod -p ${PROD_PORT}:${PROD_PORT} \
-                        -e SPRING_PROFILES_ACTIVE=prod \
-                        ${DOCKER_IMAGE}:${DOCKER_TAG}
-                    """
-//                     sleep(time: 60, unit: "SECONDS")
-                    def maxRetries = 3
-                    def retryDelay = 10
-                    echo "Prod is running on http://${SERVER_IP}:${PROD_PORT}/"
-                    sh "docker ps | grep ${APP_NAME}-prod || exit 1"
-                }
-            }
-        }
-    }
-}
+//         stage('Deploy to Prod') {
+//             when {
+//                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+//             }
+//             steps {
+//                 echo "Deploying to Prod environment on port ${PROD_PORT}"
+//                 script {
+//                     sh """
+//                         docker rm -f ${APP_NAME}-prod || true
+//                     """
+//                     sh """
+//                         docker run -d --name ${APP_NAME}-prod -p ${PROD_PORT}:${PROD_PORT} \
+//                         -e SPRING_PROFILES_ACTIVE=prod \
+//                         ${DOCKER_IMAGE}:${DOCKER_TAG}
+//                     """
+// //                     sleep(time: 60, unit: "SECONDS")
+//                     def maxRetries = 3
+//                     def retryDelay = 10
+//                     echo "Prod is running on http://${SERVER_IP}:${PROD_PORT}/"
+//                     sh "docker ps | grep ${APP_NAME}-prod || exit 1"
+//                 }
+//             }
+//         }
+//     }
+// }

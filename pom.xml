@@ -113,14 +113,14 @@
 				<active.profile>gamma</active.profile>
 			</properties>
 		</profile>
-		<profile>
+	<!--	<profile>
 			<id>prod</id>
 			<properties>
 				<spring.profiles.active>prod</spring.profiles.active>
 				<profileActive>prod</profileActive>
 				<active.profile>prod</active.profile>
 			</properties>
-		</profile>
+		</profile>-->
 	</profiles>
 
 </project>
