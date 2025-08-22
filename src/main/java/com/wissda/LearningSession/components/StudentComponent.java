@@ -36,4 +36,7 @@ public class StudentComponent {
         StudentDAO response = studentService.getStudentByEmail(studentDTO.getEmail());
         return response;
     }
+    public void deleteStudentById(final StudentDTO studentDTO) {
+        studentService.deleteStudentById(studentDTO.getStudentId());
+    }
 }
