@@ -46,4 +46,10 @@ public class StudentController {
         StudentDAO response = studentComponent.getStudentByEmail(studentDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Object> deleteStudentById(@RequestBody final StudentDTO studentDTO) {
+        studentComponent.deleteStudentById(studentDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
