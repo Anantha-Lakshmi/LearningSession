@@ -41,4 +41,7 @@ public class StudentService {
         StudentDAO response = studentRepo.getByEmail(email);
         return response;
     }
+     public void deleteStudentById(final String studentId) {
+        studentRepo.deleteById(studentId);
+    }
 }
