@@ -8,11 +8,11 @@ pipeline {
         REPO_URL = "https://github.com/Anantha-Lakshmi/LearningSession.git"
         INTEGRATION_TESTS_REPO = "https://github.com/Anantha-Lakshmi/LearningSessionIntegrationTests.git"
         BETA_URL="http://10.3.0.10:8084"
-        //GAMMA_URL="http://10.3.0.10:8082"
+        GAMMA_URL="http://10.3.0.10:8085"
         APP_NAME = "LakshmiLearningSession"
         DOCKER_IMAGE = "lakshmi_learning_session"
         BETA_PORT = 8084
-        //GAMMA_PORT = 8082
+        GAMMA_PORT = 8085
         SERVER_IP = "localhost"
         LOG_DIR = "${WORKSPACE}/logs"
         DOCKER_TAG = "${env.BUILD_NUMBER}"
